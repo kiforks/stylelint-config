@@ -1,0 +1,4 @@
+{
+	"*.{ts,html,json,scss,js,tsx,jsx}": ["prettier --check"],
+	"*.{ts,tsx,html,js,jsx}": ["eslint"]
+}

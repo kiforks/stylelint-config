@@ -1,0 +1,15 @@
+export const RULE_NO_UNKNOWN = [
+	'mixin',
+	'include',
+	'extend',
+	'content',
+	'each',
+	'function',
+	'return',
+	'if',
+	'else',
+	'use',
+	'forward',
+	'error',
+	'for',
+];

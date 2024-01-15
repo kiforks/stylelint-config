@@ -1,0 +1,77 @@
+#!/usr/bin/env sh
+
+# Define maximum commit message length
+max_length=100
+
+# Regular expression for valid commit message format (only checks the first line)
+commit_regex="^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test) \[(DEV|GEN)-[0-9]{1,}\]: [A-Z][a-zA-Z0-9 ]+$"
+
+# Get the full commit message
+commit_message=$(cat "$1")
+
+# Extract the first line of the commit message for validation
+commit_message_main=$(echo "$commit_message" | head -n 1)
+
+# Function to output specific error messages
+print_error() {
+  echo ""
+  echo "🚨 Invalid commit message format."
+  echo ""
+  echo "Please follow the required format: "
+  echo "'feat [DEV-123]: Some message'"
+  echo "where:"
+  echo "- 'feat' is one of: feat, fix, build, chore, ci, docs, perf, refactor, revert, style, test."
+  echo "- '[DEV-123]' or '[GEN-123]' is a valid Jira task."
+  echo "- The message must start with a capital letter and contain no punctuation at the end."
+  echo ""
+}
+
+# Skip validation for merge commits
+if echo "$commit_message" | grep -q "^Merge"; then
+  echo "✅ Skipping validation for merge commit."
+  exit 0
+fi
+
+# Check the type (feat, fix, etc.)
+if ! echo "$commit_message" | grep -Eq "^(feat|fix|build|chore|ci|docs|perf|refactor|revert|style|test) "; then
+  print_error
+  echo "❌ Commit error: The commit type is invalid or not followed by a space."
+  exit 1
+fi
+
+# Check the Jira task format
+if ! echo "$commit_message" | grep -Eq "\[(DEV|GEN)-[0-9]{1,}\]"; then
+  print_error
+  echo "❌ Commit error: The Jira task format is incorrect. It should be in the format '[DEV-123]' or '[GEN-123]'."
+  exit 1
+fi
+
+# Check for colon and space after the Jira task
+if ! echo "$commit_message" | grep -Eq "\]: "; then
+  print_error
+  echo "❌ Commit error: Missing colon and space after the Jira task."
+  exit 1
+fi
+
+# Check that the message starts with a capital letter
+if ! echo "$commit_message" | grep -Eq "\]: [A-Z]"; then
+  print_error
+  echo "❌ Commit error: The commit message must start with a capital letter."
+  exit 1
+fi
+
+# Check for punctuation at the end
+if echo "$commit_message" | grep -Eq "[[:punct:]]$"; then
+  print_error
+  echo "❌ Commit error: The commit message must not end with punctuation."
+  exit 1
+fi
+
+# Check the length of the main part of the commit message
+if [ ${#commit_message_main} -gt $max_length ]; then
+  print_error
+  echo "❌ Commit error: The commit message exceeds the maximum length of $max_length characters. Current length: ${#commit_message_main} characters."
+  exit 1
+fi
+
+# If all checks pass, the commit message is valid

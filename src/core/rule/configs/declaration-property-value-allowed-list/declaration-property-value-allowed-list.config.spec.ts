@@ -1,0 +1,96 @@
+import { DeclarationPropertyValueAllowedListConfig } from './declaration-property-value-allowed-list.config';
+
+describe('DeclarationPropertyValueAllowedListConfig', () => {
+	describe('VALUES', () => {
+		it('should return the following value', () => {
+			expect(DeclarationPropertyValueAllowedListConfig.VALUES).toEqual({
+				'background-color': [
+					'/^rgba/',
+					'inherit',
+					'initial',
+					'none',
+					'transparent',
+					'currentColor',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				'border-color': [
+					'/^rgba/',
+					'inherit',
+					'initial',
+					'none',
+					'transparent',
+					'currentColor',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				color: [
+					'/^rgba/',
+					'inherit',
+					'initial',
+					'none',
+					'transparent',
+					'currentColor',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				fill: [
+					'/^rgba/',
+					'inherit',
+					'initial',
+					'none',
+					'transparent',
+					'currentColor',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				'font-family': [
+					'/^url/',
+					'inherit',
+					'initial',
+					'none',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				'font-size': ['inherit', 'initial', 'none', '0', '1', '/^(\\$|--)/', '/^var\\(--/', '/^[a-zA-Z0-9_-]+\\.\\$/'],
+				'line-height': [
+					'inherit',
+					'initial',
+					'none',
+					'0',
+					'1',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				'outline-color': [
+					'/^rgba/',
+					'inherit',
+					'initial',
+					'none',
+					'transparent',
+					'currentColor',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+				size: ['inherit', 'initial', 'none', '0', '1', '/^(\\$|--)/', '/^var\\(--/', '/^[a-zA-Z0-9_-]+\\.\\$/'],
+				stroke: [
+					'/^rgba/',
+					'inherit',
+					'initial',
+					'none',
+					'transparent',
+					'/^(\\$|--)/',
+					'/^var\\(--/',
+					'/^[a-zA-Z0-9_-]+\\.\\$/',
+				],
+			});
+		});
+	});
+});

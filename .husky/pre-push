@@ -1,0 +1,24 @@
+#!/usr/bin/env sh
+
+# Get the current branch name
+branch_name=$(git rev-parse --abbrev-ref HEAD)
+
+# Define the regular expression for branch name pattern
+branch_regex="^(DEV|GEN)-[0-9]+/[a-zA-Z0-9\-]*[a-zA-Z0-9]$"
+
+# Check if the branch name exceeds 30 characters
+if [ ${#branch_name} -gt 30 ]; then
+  echo "❌ Branch name too long: ${branch_name}. It should not exceed 25 characters."
+  exit 1
+fi
+
+# Check the branch name format
+if ! echo "$branch_name" | grep -Eq "$branch_regex"; then
+  echo "❌ Invalid branch name: ${branch_name}."
+  echo "The branch name should follow the format: 'DEV-123/some-branch-name' or 'GEN-123/some-branch-name'."
+  exit 1
+fi
+
+# If all checks pass, allow the push
+echo "✅ Branch name is valid: ${branch_name}."
+exit 0

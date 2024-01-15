@@ -1,0 +1,104 @@
+name: CI
+
+on:
+  pull_request:
+    branches:
+      - main
+      - '!dependabot/**'
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - ready_for_review
+      - converted_to_draft
+
+defaults:
+  run:
+    shell: bash
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  labeler:
+    permissions:
+      contents: read
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Automatic label creation for PR
+        uses: actions/labeler@v5
+        with:
+          sync-labels: true
+
+  check-version:
+    name: 'Check Version Increment'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Check if version has been incremented compared to main branch
+        run: |
+          CURRENT_VERSION=$(node -p "require('./package.json').version")
+
+          git fetch origin main
+          git checkout origin/main -- package.json
+          MAIN_VERSION=$(node -p "require('./package.json').version")
+
+          git checkout -- package.json
+
+          HIGHEST_VERSION=$(echo -e "$CURRENT_VERSION\n$MAIN_VERSION" | sort -V | tail -n1)
+
+          if [ "$CURRENT_VERSION" = "$MAIN_VERSION" ]; then
+            echo "Error: Version in package.json ($CURRENT_VERSION) has not been incremented compared to main branch ($MAIN_VERSION)."
+            exit 1
+            elif [ "$HIGHEST_VERSION" != "$CURRENT_VERSION" ]; then
+          echo "Error: Version in package.json ($CURRENT_VERSION) is not the highest compared to main branch ($MAIN_VERSION)."
+            exit 1
+            else
+            echo "Version in package.json ($CURRENT_VERSION) is higher than on the main branch ($MAIN_VERSION)."
+            fi
+
+  check-changelog:
+    name: 'Check CHANGELOG Update'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check if CHANGELOG.md has been updated
+        run: |
+          VERSION_IN_PACKAGE_JSON=$(node -p "require('./package.json').version")
+
+          if ! grep -qE "# \[?$VERSION_IN_PACKAGE_JSON\]?" CHANGELOG.md; then
+          echo "Error: CHANGELOG.md has not been updated for version $VERSION_IN_PACKAGE_JSON."
+          exit 1
+          else
+          echo "CHANGELOG.md has been updated for version $VERSION_IN_PACKAGE_JSON."
+          fi
+
+  validation:
+    name: 'Code Quality and Tests'
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ['20.x']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          cache-dependency-path: '**/package-lock.json'
+      - run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Check formatting
+        run: npm run format
+      - name: Lint check
+        run: npm run lint
+      - name: Run tests with coverage
+        run: npm run test:ci
