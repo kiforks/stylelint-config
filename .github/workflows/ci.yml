@@ -99,6 +99,6 @@ jobs:
       - name: Check formatting
         run: npm run format
       - name: Lint check
-        run: npm run lint
+        run: npm run eslint
       - name: Run tests with coverage
         run: npm run test:ci
