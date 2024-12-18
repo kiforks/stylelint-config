@@ -26,19 +26,26 @@ export class PluginSelectorCombinatorNesting extends PluginBase {
 			possible: PluginConfigHelper.isExecutionMode,
 		};
 
-		if (this.isValidOptions(mainOptions)) this.checkRule(result, mode);
+		if (this.isValidOptions(mainOptions)) {
+			this.checkRule(result, mode);
+		}
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	protected check({ rule, options: mode }: PluginCheckData<PluginConfigExecutionMode>): false | void {
-		const isInvalidSyntaxBlock = PluginHelper.isInvalidSyntaxBlock(rule);
-		const isRule = PluginHelper.isRule(rule);
+		const isInvalidSyntaxBlock = PluginHelper.isInvalidSyntaxBlock(rule),
+			isRule = PluginHelper.isRule(rule);
 
-		if (isInvalidSyntaxBlock || !isRule) return;
+		if (isInvalidSyntaxBlock || !isRule) {
+			return;
+		}
 
-		const isStringSelector = typeof rule.selector === 'string';
-		const isNestedProperty = rule.selector.slice(-1) === ':';
+		const isStringSelector = typeof rule.selector === 'string',
+			isNestedProperty = rule.selector.slice(-1) === ':';
 
-		if (isStringSelector && isNestedProperty) return;
+		if (isStringSelector && isNestedProperty) {
+			return;
+		}
 
 		this.isAlwaysMode = PluginConfigHelper.isAlwaysExecutionMode(mode);
 
@@ -50,43 +57,53 @@ export class PluginSelectorCombinatorNesting extends PluginBase {
 	}
 
 	private checkAlwaysMode(node: selectorParser.Node, rule: Rule): void {
-		const { value, parent, type } = node;
+		const { value, parent, type } = node,
+			isSelectorNodeType = PluginSelectorHelper.isSelectorNodeType(type),
+			isChildOfPseudoSelector =
+				parent?.parent &&
+				PluginSelectorHelper.isSelectorNodeType(parent.type) &&
+				PluginSelectorHelper.isPseudoNodeType(parent.parent.type);
 
-		const isSelectorNodeType = PluginSelectorHelper.isSelectorNodeType(type);
-		const isChildOfPseudoSelector =
-			parent?.parent &&
-			PluginSelectorHelper.isSelectorNodeType(parent.type) &&
-			PluginSelectorHelper.isPseudoNodeType(parent.parent.type);
-
-		if (!value || isSelectorNodeType || isChildOfPseudoSelector) return;
+		if (!value || isSelectorNodeType || isChildOfPseudoSelector) {
+			return;
+		}
 
 		const nodePrev = node.prev();
 
-		if (!nodePrev) return;
+		if (!nodePrev) {
+			return;
+		}
 
 		const nodeNext = node.next();
 
-		if (nodeNext && this.precedesParentSelector(node)) return;
+		if (nodeNext && this.precedesParentSelector(node)) {
+			return;
+		}
 
-		const prevType = nodePrev.type;
+		const prevType = nodePrev.type,
+			isNodeTypeCombinator = PluginSelectorHelper.isCombinatorNodeType(type),
+			isNodeNextPresentAndNotChaining = nodeNext && !PluginSelectorHelper.isChainingType(nodeNext.type),
+			isNodePrevNotChaining = !PluginSelectorHelper.isChainingType(prevType);
 
-		const isNodeTypeCombinator = PluginSelectorHelper.isCombinatorNodeType(type);
-		const isNodeNextPresentAndNotChaining = nodeNext && !PluginSelectorHelper.isChainingType(nodeNext.type);
-		const isNodePrevNotChaining = !PluginSelectorHelper.isChainingType(prevType);
-
-		if (isNodeTypeCombinator && (isNodeNextPresentAndNotChaining || isNodePrevNotChaining)) return;
+		if (isNodeTypeCombinator && (isNodeNextPresentAndNotChaining || isNodePrevNotChaining)) {
+			return;
+		}
 
 		const isCurrentTypeChainingAndPrevNot =
-			PluginSelectorHelper.isChainingType(type) && !PluginSelectorHelper.isChainingType(prevType);
-		const isTypeNotCombinatorAndNotChaining =
-			!PluginSelectorHelper.isCombinatorNodeType(type) && !PluginSelectorHelper.isChainingType(type);
+				PluginSelectorHelper.isChainingType(type) && !PluginSelectorHelper.isChainingType(prevType),
+			isTypeNotCombinatorAndNotChaining =
+				!PluginSelectorHelper.isCombinatorNodeType(type) && !PluginSelectorHelper.isChainingType(type);
 
-		if (isCurrentTypeChainingAndPrevNot || isTypeNotCombinatorAndNotChaining) return;
+		if (isCurrentTypeChainingAndPrevNot || isTypeNotCombinatorAndNotChaining) {
+			return;
+		}
 
-		const ruleSelector = rule.selector;
-		const hasInterpolation = this.interpolationRe.test(ruleSelector);
+		const ruleSelector = rule.selector,
+			hasInterpolation = this.interpolationRe.test(ruleSelector);
 
-		if (hasInterpolation) return;
+		if (hasInterpolation) {
+			return;
+		}
 
 		const messageArgs: PluginSelectorCombinatorNestingMessageArgs = [ruleSelector];
 
@@ -94,10 +111,14 @@ export class PluginSelectorCombinatorNesting extends PluginBase {
 	}
 
 	private checkNeverMode(rule: Rule): void {
-		if (rule.parent && PluginHelper.isRoot(rule.parent)) return;
+		if (rule.parent && PluginHelper.isRoot(rule.parent)) {
+			return;
+		}
 
 		rule.nodes.forEach(node => {
-			if (!PluginHelper.isRule(node)) return;
+			if (!PluginHelper.isRule(node)) {
+				return;
+			}
 
 			const messageArgs: PluginSelectorCombinatorNestingMessageArgs = [node.selector];
 

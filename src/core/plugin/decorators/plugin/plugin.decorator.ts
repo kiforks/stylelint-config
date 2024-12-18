@@ -48,12 +48,13 @@ import { PluginConstructor, PluginDecoratorConfig, PluginPlugins, PluginRules } 
 export const Plugin =
 	(config: PluginDecoratorConfig): (<T extends PluginConstructor>(constructor: T) => T) =>
 	<T extends PluginConstructor>(constructor: T): T =>
+		// @ts-ignore it's currently the only way to solve the eslint issues
 		class extends constructor {
-			constructor(...args: any[]) {
-				super(...args);
+			constructor(...args: unknown[]) {
+				super(...(args as never[]));
 
-				const currentPlugins = (this.plugins || []) as PluginPlugins;
-				const currentRules: PluginRules = this.rules;
+				const currentPlugins = (this.plugins || []) as PluginPlugins,
+					currentRules: PluginRules = this.rules;
 
 				this.plugins = [...currentPlugins, ...config.providers.map(({ provide }) => new provide().createRule())];
 

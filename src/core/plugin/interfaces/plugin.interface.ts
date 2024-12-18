@@ -9,20 +9,21 @@ export type PluginRuleType = AtRule | Rule;
 export type PluginRules = Config['rules'];
 export type PluginPlugins = Array<stylelint.Plugin | string>;
 export type PluginProvide = new () => PluginBase;
-export type PluginConstructor = new (...args: any[]) => Config;
+export type PluginConstructor = new (...args: never[]) => Config;
 export type PluginRegExp = RegExp | string;
 export type PluginRegExpArray = PluginRegExp[];
 export type PluginRuleBaseFn = (root: PostCSS.Root, result: PostcssResult) => Promise<void> | void;
+// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 export type PluginCheckStatementFn = (rule: PluginRuleType) => false | void;
 export type PluginOptions<O = unknown> = O;
 export type PluginSecondaryOptions<S = unknown> = Record<string, S>;
 export type PluginRuleOptions = RuleOptions;
 export type PluginProblem = Omit<Problem, 'message' | 'result' | 'ruleName'>;
-export type PluginRegExpStringMatchedElement = {
+export interface PluginRegExpStringMatchedElement {
 	match: string;
 	pattern: RegExp | string;
 	substring: string;
-};
+}
 export type PluginRegExpStringMatchedData = PluginRegExpStringMatchedElement | false;
 
 export type PluginCheckFn = <O = unknown, S = unknown>(

@@ -11,7 +11,7 @@ describe('PluginRegExp', () => {
 		it('should create regex with wildcard at the end if no matching parenthesis', () => {
 			const regex = PluginRegExpHelper.createWildcardRegex('color: blue');
 
-			expect(regex).toEqual(new RegExp('color: blue[\\s\\S]*'));
+			expect(regex).toEqual(/color: blue[\s\S]*/);
 		});
 	});
 });

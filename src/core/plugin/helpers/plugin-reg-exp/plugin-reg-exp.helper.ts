@@ -7,19 +7,17 @@ export abstract class PluginRegExpHelper {
 	 */
 	public static createWildcardRegex(parameter: string): RegExp {
 		// Search for the last opening parenthesis
-		const lastOpeningIndex = parameter.lastIndexOf('(');
-		// Find the corresponding closing parenthesis
-		const closingIndex = parameter.indexOf(')', lastOpeningIndex);
-		// Validate existence of both parenthesis
-		const hasValidParenthesis = lastOpeningIndex !== -1 && closingIndex !== -1;
-
-		// Insert [\s\S]* before the closing parenthesis
-		const modifiedParameter = hasValidParenthesis
-			? `${parameter.substring(0, closingIndex)}[\\s\\S]*${parameter.substring(closingIndex)}`
-			: `${parameter}[\\s\\S]*`;
-
-		// Escape special characters
-		const escapedParameter = modifiedParameter.replace(/\(/g, '\\(').replace(/\)/g, '\\)');
+		const lastOpeningIndex = parameter.lastIndexOf('('),
+			// Find the corresponding closing parenthesis
+			closingIndex = parameter.indexOf(')', lastOpeningIndex),
+			// Validate existence of both parenthesis
+			hasValidParenthesis = lastOpeningIndex !== -1 && closingIndex !== -1,
+			// Insert [\s\S]* before the closing parenthesis
+			modifiedParameter = hasValidParenthesis
+				? `${parameter.substring(0, closingIndex)}[\\s\\S]*${parameter.substring(closingIndex)}`
+				: `${parameter}[\\s\\S]*`,
+			// Escape special characters
+			escapedParameter = modifiedParameter.replace(/\(/g, '\\(').replace(/\)/g, '\\)');
 
 		return new RegExp(escapedParameter);
 	}

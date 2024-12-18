@@ -5,5 +5,5 @@ import { PluginNoDuplicateAtRule } from '../../api';
 
 export const pluginNoDuplicateAtRuleProvider = (): PluginProvider => ({
 	provide: PluginNoDuplicateAtRule,
-	options: PluginMediaConfig.AT_RULES,
+	options: PluginMediaConfig.AtRules,
 });

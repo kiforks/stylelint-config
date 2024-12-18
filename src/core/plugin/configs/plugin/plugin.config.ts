@@ -1,4 +1,4 @@
 export abstract class PluginConfig {
-	public static readonly NAMESPACE = 'kifor-stylelint';
-	public static readonly REPOSITORY_URL = 'https://github.com/kiforks/@kiforks/stylelint-config';
+	public static readonly Namespace = 'kifor-stylelint';
+	public static readonly RepositoryUrl = 'https://github.com/kiforks/@kiforks/stylelint-config';
 }

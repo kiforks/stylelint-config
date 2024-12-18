@@ -2106,6 +2106,7 @@ describe('stylelint main config', () => {
 			'rule-selector-property-disallowed-list': {
 				'/^\\.ri-/': ['font-size'],
 				'/ri\\-/': ['font-size'],
+				// eslint-disable-next-line id-length
 				i: ['font-size'],
 			},
 			'scss/at-else-closing-brace-newline-after': 'always-last-in-chain',
