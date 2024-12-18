@@ -2,7 +2,7 @@ import config from '../../../.stylelintrc.js';
 
 import stylelint from 'stylelint';
 
-const lint = stylelint.lint;
+const { lint } = stylelint;
 
 describe('order', () => {
 	/** @see https://github.com/hudochenkov/stylelint-order/blob/master/rules/properties-order/README.md */

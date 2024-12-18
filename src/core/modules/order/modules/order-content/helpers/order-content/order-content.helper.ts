@@ -38,8 +38,8 @@ export abstract class OrderContentHelper {
 	 * ]
 	 */
 	public static createPseudoClasses(pseudoClasses: string[]): OrderRule[] {
-		const ampCollection = OrderHelper.createSelectors(pseudoClasses.map(element => `^&:${element}`));
-		const collection = OrderHelper.createSelectors(pseudoClasses.map(element => `^:${element}`));
+		const ampCollection = OrderHelper.createSelectors(pseudoClasses.map(element => `^&:${element}`)),
+			collection = OrderHelper.createSelectors(pseudoClasses.map(element => `^:${element}`));
 
 		return [...collection, ...ampCollection] as OrderRule[];
 	}
@@ -59,8 +59,8 @@ export abstract class OrderContentHelper {
 	 * ]
 	 */
 	public static createPseudoElements(pseudoElements: string[]): OrderRule[] {
-		const ampCollection = OrderHelper.createSelectors(pseudoElements.map(element => `^&::${element}`));
-		const collection = OrderHelper.createSelectors(pseudoElements.map(element => `^::${element}`));
+		const ampCollection = OrderHelper.createSelectors(pseudoElements.map(element => `^&::${element}`)),
+			collection = OrderHelper.createSelectors(pseudoElements.map(element => `^::${element}`));
 
 		return [...collection, ...ampCollection] as OrderRule[];
 	}

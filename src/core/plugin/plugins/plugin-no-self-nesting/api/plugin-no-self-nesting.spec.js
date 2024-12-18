@@ -3,7 +3,7 @@ import { getWarning } from '../../../../../js/tests/spec-helpers.js';
 
 import stylelint from 'stylelint';
 
-const lint = stylelint.lint;
+const { lint } = stylelint;
 
 describe('PluginNoSelfNesting', () => {
 	const ruleName = 'kifor-stylelint/no-self-nesting';
@@ -65,14 +65,16 @@ describe('PluginNoSelfNesting', () => {
 			result.results.forEach(item => {
 				item.warnings.forEach((warning, index) => {
 					if (warning.rule === ruleName) {
-						if (!index)
+						if (!index) {
 							expect(warning.text).toBe(
 								`Nesting is not allowed for child selector '\"@include media-max(sm)\"' under parent selector '\"include /^media-/\"' when they match the specified pattern. (${ruleName})`
 							);
-						if (index)
+						}
+						if (index) {
 							expect(warning.text).toBe(
 								`Nesting is not allowed for child selector '\"@include media-max(lg)\"' under parent selector '\"include /^media-/\"' when they match the specified pattern. (${ruleName})`
 							);
+						}
 					}
 				});
 			});

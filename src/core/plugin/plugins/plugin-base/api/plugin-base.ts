@@ -67,7 +67,7 @@ export abstract class PluginBase {
 	 * Returns the full rule name, including the namespace.
 	 */
 	public get name(): string {
-		return `${PluginConfig.NAMESPACE}/${this.ruleName}`;
+		return `${PluginConfig.Namespace}/${this.ruleName}`;
 	}
 
 	/**
@@ -83,26 +83,26 @@ export abstract class PluginBase {
 	 */
 	public createRule(): Plugin {
 		const ruleBase: RuleBase =
-			<O = unknown, S = unknown>(
-				options: O,
-				secondaryOptions: PluginSecondaryOptions<S>,
-				context: RuleContext
-			): PluginRuleBaseFn =>
-			(root: PostCSS.Root, result: PostcssResult) =>
-				this.render({
-					options,
-					secondaryOptions,
-					context,
-					result,
-					root,
-				});
-		const config: PluginConfigData = {
-			ruleName: this.name,
-			messages: this.messages,
-			meta: { url: PluginConfig.REPOSITORY_URL },
-			primaryOptionArray: this.isArrayOptions,
-		};
-		const rule: Rule = Object.assign(ruleBase, config);
+				<O = unknown, S = unknown>(
+					options: O,
+					secondaryOptions: PluginSecondaryOptions<S>,
+					context: RuleContext
+				): PluginRuleBaseFn =>
+				(root: PostCSS.Root, result: PostcssResult) =>
+					this.render({
+						options,
+						secondaryOptions,
+						context,
+						result,
+						root,
+					}),
+			config: PluginConfigData = {
+				ruleName: this.name,
+				messages: this.messages,
+				meta: { url: PluginConfig.RepositoryUrl },
+				primaryOptionArray: this.isArrayOptions,
+			},
+			rule: Rule = Object.assign(ruleBase, config);
 
 		return stylelint.createPlugin(this.name, rule);
 	}
@@ -117,6 +117,7 @@ export abstract class PluginBase {
 	 * The core logic for the plugin, checking against the provided data.
 	 * @abstract Must be implemented by the extending class to define the check logic.
 	 */
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	protected abstract check(data: PluginCheckData): false | void;
 
 	/**

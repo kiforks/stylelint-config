@@ -3,7 +3,7 @@ import { getWarning } from '../../../../../js/tests/spec-helpers.js';
 
 import stylelint from 'stylelint';
 
-const lint = stylelint.lint;
+const { lint } = stylelint;
 
 describe('PluginSelectorCombinatorNesting', () => {
 	const ruleName = 'kifor-stylelint/selector-combinator-nesting';

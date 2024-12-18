@@ -8,7 +8,7 @@ describe('PluginNoDuplicateAtRule', () => {
 	it('should have the following value', () => {
 		const provider = {
 			provide: PluginNoDuplicateAtRule,
-			options: PluginMediaConfig.AT_RULES,
+			options: PluginMediaConfig.AtRules,
 		};
 
 		expect(pluginNoDuplicateAtRuleProvider()).toEqual(provider);

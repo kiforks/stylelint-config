@@ -318,10 +318,10 @@ export abstract class PluginConfigHelper {
 		rule: Rule,
 		configData: Readonly<PluginConfigRule> | readonly PluginConfigRule[]
 	): Nullable<Readonly<PluginConfigValidationRule>> {
-		const { selector } = rule;
-		const validationRule = PluginConfigHelper.isPluginConfigRules(configData)
-			? configData.find(option => PluginHelper.matchesStringOrRegExp(selector, option.selector))
-			: PluginHelper.matchesStringOrRegExp(selector, configData.selector) && configData;
+		const { selector } = rule,
+			validationRule = PluginConfigHelper.isPluginConfigRules(configData)
+				? configData.find(option => PluginHelper.matchesStringOrRegExp(selector, option.selector))
+				: PluginHelper.matchesStringOrRegExp(selector, configData.selector) && configData;
 
 		return validationRule
 			? {
@@ -350,12 +350,14 @@ export abstract class PluginConfigHelper {
 			? configData.find(option => PluginConfigHelper.isValidationAtRule(rule, option))
 			: PluginConfigHelper.isValidationAtRule(rule, configData) && configData;
 
-		if (!validationRule) return null;
+		if (!validationRule) {
+			return null;
+		}
 
 		const messageName = validationRule.params
-			? `"${validationRule.name} ${validationRule.params}"`
-			: `"${validationRule.name}"`;
-		const messageFormattedName = validationRule.params ? `"@${rule.name} ${rule.params}"` : `"@${rule.name}"`;
+				? `"${validationRule.name} ${validationRule.params}"`
+				: `"${validationRule.name}"`,
+			messageFormattedName = validationRule.params ? `"@${rule.name} ${rule.params}"` : `"@${rule.name}"`;
 
 		return {
 			rule: validationRule,
@@ -414,9 +416,10 @@ export abstract class PluginConfigHelper {
 	 * // returns false
 	 */
 	public static isValidationAtRule({ name, params }: AtRule, option: PluginConfigAtRule): boolean {
-		const hasParams = !!params && !!option.params;
-		const isMatchedName = !!PluginHelper.matchesStringOrRegExp(name, option.name);
-		const isMatchedParams = hasParams && !!PluginHelper.matchesStringOrRegExp(params, new RegExp(option.params!));
+		const hasParams = Boolean(params) && Boolean(option.params),
+			isMatchedName = Boolean(PluginHelper.matchesStringOrRegExp(name, option.name)),
+			isMatchedParams =
+				hasParams && Boolean(PluginHelper.matchesStringOrRegExp(params, new RegExp(option.params as string)));
 
 		return hasParams ? isMatchedName && isMatchedParams : isMatchedName;
 	}

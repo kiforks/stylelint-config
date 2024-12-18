@@ -24,25 +24,27 @@ export class PluginMaxNestingDepth extends PluginBase {
 		secondaryOptions,
 		result,
 	}: PluginData<number, PluginMaxNestingDepthSecondaryOptions>): void {
-		const possibleValues = [PluginHelper.isString, PluginHelper.isRegExp];
-		const possibleSecondary: PluginMaxNestingDepthPossibleOptions = {
-			ignore: ['blockless-at-rules', 'pseudo-classes'],
-			ignoreAtRules: possibleValues,
-			ignoreRules: possibleValues,
-			ignorePseudoClasses: possibleValues,
-			ignoreHostSelectors: possibleValues,
-		};
-		const mainOptions: PluginRuleOptions = {
-			actual: maxDepth,
-			possible: [PluginHelper.isNumber],
-		};
-		const optionalOptions: PluginRuleOptions = {
-			optional: true,
-			actual: secondaryOptions,
-			possible: possibleSecondary,
-		};
+		const possibleValues = [PluginHelper.isString, PluginHelper.isRegExp],
+			possibleSecondary: PluginMaxNestingDepthPossibleOptions = {
+				ignore: ['blockless-at-rules', 'pseudo-classes'],
+				ignoreAtRules: possibleValues,
+				ignoreRules: possibleValues,
+				ignorePseudoClasses: possibleValues,
+				ignoreHostSelectors: possibleValues,
+			},
+			mainOptions: PluginRuleOptions = {
+				actual: maxDepth,
+				possible: [PluginHelper.isNumber],
+			},
+			optionalOptions: PluginRuleOptions = {
+				optional: true,
+				actual: secondaryOptions,
+				possible: possibleSecondary,
+			};
 
-		if (!this.isValidOptions(mainOptions, optionalOptions)) return;
+		if (!this.isValidOptions(mainOptions, optionalOptions)) {
+			return;
+		}
 
 		this.checkRule(result, maxDepth, secondaryOptions);
 		this.checkAtRule(result, maxDepth, secondaryOptions);
@@ -52,19 +54,26 @@ export class PluginMaxNestingDepth extends PluginBase {
 		options: maxDepth,
 		secondaryOptions,
 		rule,
+		// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	}: PluginCheckData<number, PluginMaxNestingDepthSecondaryOptions>): false | void {
-		const isIgnoreAtRule = this.isIgnoreAtRule(rule, secondaryOptions);
-		const isIgnoreRule = this.isIgnoreRule(rule, secondaryOptions);
+		const isIgnoreAtRule = this.isIgnoreAtRule(rule, secondaryOptions),
+			isIgnoreRule = this.isIgnoreRule(rule, secondaryOptions);
 
-		if (isIgnoreAtRule || isIgnoreRule || PluginHelper.isInvalidSyntaxBlock(rule)) return;
+		if (isIgnoreAtRule || isIgnoreRule || PluginHelper.isInvalidSyntaxBlock(rule)) {
+			return;
+		}
 
 		const nestingDepth = this.nestingDepth(rule, 0, secondaryOptions);
 
-		if (nestingDepth === 0) this.isIgnoreHostSelector = this.isIgnoreHostSelectors(rule, secondaryOptions);
+		if (nestingDepth === 0) {
+			this.isIgnoreHostSelector = this.isIgnoreHostSelectors(rule, secondaryOptions);
+		}
 
 		const depth = this.isIgnoreHostSelector ? maxDepth + 1 : maxDepth;
 
-		if (nestingDepth <= depth) return;
+		if (nestingDepth <= depth) {
+			return;
+		}
 
 		this.reportProblem({ node: rule, messageArgs: [maxDepth] });
 	}
@@ -76,36 +85,36 @@ export class PluginMaxNestingDepth extends PluginBase {
 			return 0;
 		}
 
-		const isParentRoot = PluginHelper.isRoot(parent);
-		const isGrandparentRootAndParentAtRule =
-			PluginHelper.isAtRule(parent) && parent.parent && PluginHelper.isRoot(parent.parent);
+		const isParentRoot = PluginHelper.isRoot(parent),
+			isGrandparentRootAndParentAtRule =
+				PluginHelper.isAtRule(parent) && parent.parent && PluginHelper.isRoot(parent.parent);
 
 		// The nesting maxDepth level's computation has finished
-		// when this function, recursively called, receives
-		// a node that is not nested -- a direct child of the
-		// root node
+		// When this function, recursively called, receives
+		// A node that is not nested -- a direct child of the
+		// Root node
 		if (isParentRoot || isGrandparentRootAndParentAtRule) {
 			return level;
 		}
 
-		const isIgnoreAtRule = this.isIgnoreAtRule(parent, secondaryOptions);
-		const ignoresBlocklessAtRules =
-			PluginHelper.optionsMatches(secondaryOptions, 'ignore', 'blockless-at-rules') &&
-			PluginHelper.isAtRule(node) &&
-			node.every(child => !PluginHelper.isDeclaration(child));
-		const ignoresPseudoClasses =
-			PluginHelper.optionsMatches(secondaryOptions, 'ignore', 'pseudo-classes') &&
-			PluginHelper.isRule(node) &&
-			this.containsPseudoClassesOnly(node.selector);
-		const ignoresSpecificPseudoClassesOrRules =
-			PluginHelper.isRule(node) && this.containsIgnoredPseudoClassesOrRulesOnly(node.selectors, secondaryOptions);
-		const isIgnoreRule =
-			isIgnoreAtRule || ignoresBlocklessAtRules || ignoresPseudoClasses || ignoresSpecificPseudoClassesOrRules;
+		const isIgnoreAtRule = this.isIgnoreAtRule(parent, secondaryOptions),
+			ignoresBlocklessAtRules =
+				PluginHelper.optionsMatches(secondaryOptions as Record<string, unknown>, 'ignore', 'blockless-at-rules') &&
+				PluginHelper.isAtRule(node) &&
+				node.every(child => !PluginHelper.isDeclaration(child)),
+			ignoresPseudoClasses =
+				PluginHelper.optionsMatches(secondaryOptions as Record<string, unknown>, 'ignore', 'pseudo-classes') &&
+				PluginHelper.isRule(node) &&
+				this.containsPseudoClassesOnly(node.selector),
+			ignoresSpecificPseudoClassesOrRules =
+				PluginHelper.isRule(node) && this.containsIgnoredPseudoClassesOrRulesOnly(node.selectors, secondaryOptions),
+			isIgnoreRule =
+				isIgnoreAtRule || ignoresBlocklessAtRules || ignoresPseudoClasses || ignoresSpecificPseudoClassesOrRules;
 
 		// Unless any of the conditions above apply, we want to
-		// add 1 to the nesting maxDepth level and then check the parent,
-		// continuing to add and move up the hierarchy
-		// until we hit the root node
+		// Add 1 to the nesting maxDepth level and then check the parent,
+		// Continuing to add and move up the hierarchy
+		// Until we hit the root node
 		return this.nestingDepth(parent, isIgnoreRule ? level : level + 1, secondaryOptions);
 	}
 
@@ -113,7 +122,7 @@ export class PluginMaxNestingDepth extends PluginBase {
 		return (
 			PluginHelper.isRule(node) &&
 			PluginHelper.optionsMatches<keyof PluginMaxNestingDepthSecondaryOptions>(
-				secondaryOptions,
+				secondaryOptions as Record<string, unknown>,
 				'ignoreRules',
 				node.selector
 			)
@@ -124,7 +133,7 @@ export class PluginMaxNestingDepth extends PluginBase {
 		return (
 			PluginHelper.isAtRule(node) &&
 			PluginHelper.optionsMatches<keyof PluginMaxNestingDepthSecondaryOptions>(
-				secondaryOptions,
+				secondaryOptions as Record<string, unknown>,
 				'ignoreAtRules',
 				node.name
 			)
@@ -136,7 +145,7 @@ export class PluginMaxNestingDepth extends PluginBase {
 			PluginHelper.isParentRoot(node) &&
 			PluginHelper.isRule(node) &&
 			PluginHelper.optionsMatches<keyof PluginMaxNestingDepthSecondaryOptions>(
-				secondaryOptions,
+				secondaryOptions as Record<string, unknown>,
 				'ignoreHostSelectors',
 				node.selector
 			)
@@ -144,8 +153,8 @@ export class PluginMaxNestingDepth extends PluginBase {
 	}
 
 	private containsPseudoClassesOnly(selector: string): boolean {
-		const normalized = parser().processSync(selector, { lossless: false });
-		const selectors = normalized.split(',');
+		const normalized = parser().processSync(selector, { lossless: false }),
+			selectors = normalized.split(',');
 
 		return selectors.every(item => this.extractPseudoRule(item));
 	}
@@ -154,9 +163,9 @@ export class PluginMaxNestingDepth extends PluginBase {
 		selectors: string[],
 		secondaryOptions: PluginMaxNestingDepthSecondaryOptions
 	): boolean {
-		const ignorePseudoClasses = secondaryOptions?.ignorePseudoClasses;
-		const ignoreRules = secondaryOptions?.ignoreRules;
-		const hasIgnoredEntities = !!ignorePseudoClasses || !!ignoreRules;
+		const ignorePseudoClasses = secondaryOptions?.ignorePseudoClasses,
+			ignoreRules = secondaryOptions?.ignoreRules,
+			hasIgnoredEntities = Boolean(ignorePseudoClasses) || Boolean(ignoreRules);
 
 		return secondaryOptions && hasIgnoredEntities && this.allSelectorsMatchIgnoredRules(selectors, secondaryOptions);
 	}
@@ -167,24 +176,33 @@ export class PluginMaxNestingDepth extends PluginBase {
 	): boolean {
 		return selectors.every(selector => {
 			const ignoresRules =
-				secondaryOptions?.ignoreRules && PluginHelper.optionsMatches(secondaryOptions, 'ignoreRules', selector);
-			const ignorePseudoClasses = secondaryOptions?.ignorePseudoClasses;
+					secondaryOptions?.ignoreRules &&
+					PluginHelper.optionsMatches(secondaryOptions as Record<string, unknown>, 'ignoreRules', selector),
+				ignorePseudoClasses = secondaryOptions?.ignorePseudoClasses;
 
-			if (ignoresRules) return true;
+			if (ignoresRules) {
+				return true;
+			}
 
-			if (!ignorePseudoClasses) return false;
+			if (!ignorePseudoClasses) {
+				return false;
+			}
 
 			const pseudoRule = this.extractPseudoRule(selector);
 
-			return pseudoRule && PluginHelper.optionsMatches(secondaryOptions, 'ignorePseudoClasses', pseudoRule);
+			return (
+				pseudoRule &&
+				PluginHelper.optionsMatches(secondaryOptions as Record<string, unknown>, 'ignorePseudoClasses', pseudoRule)
+			);
 		});
 	}
 
 	private extractPseudoRule(selector: string): Nullable<string> {
-		// Check if the selector starts with '&:' and does not have a double colon '::' indicating a pseudo-element
-		const startsWithPseudoClass = selector.startsWith('&:') && selector[2] !== ':';
+		const index = 2,
+			// Check if the selector starts with '&:' and does not have a double colon '::' indicating a pseudo-element
+			startsWithPseudoClass = selector.startsWith('&:') && selector[index] !== ':';
 
 		// Extract and return the pseudo-rule part of the selector if the above condition is true, otherwise return undefined
-		return startsWithPseudoClass ? selector.slice(2) : undefined;
+		return startsWithPseudoClass ? selector.slice(index) : undefined;
 	}
 }

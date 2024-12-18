@@ -18,30 +18,43 @@ export class PluginNoSelfNesting extends PluginBase {
 			possible: PluginConfigHelper.isValidRuleData,
 		};
 
-		if (!this.isValidOptions(mainOptions)) return;
+		if (!this.isValidOptions(mainOptions)) {
+			return;
+		}
 
 		this.checkRule(result, options);
 		this.checkAtRule(result, options);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	protected check({ rule, options }: PluginCheckData<PluginConfigRuleType[], PluginConfigRuleType[]>): false | void {
-		if (PluginHelper.isInvalidSyntaxBlock(rule)) return;
+		if (PluginHelper.isInvalidSyntaxBlock(rule)) {
+			return;
+		}
 
-		const validationRule = PluginConfigHelper.getValidationData(rule, options);
-		const childNodes = rule.nodes;
+		const validationRule = PluginConfigHelper.getValidationData(rule, options),
+			childNodes = rule.nodes;
 
-		if (!validationRule || !childNodes?.length) return;
+		if (!validationRule || !childNodes?.length) {
+			return;
+		}
 
 		rule.walk(child => {
-			if (!PluginHelper.isValidChildPluginRule(child)) return;
+			if (!PluginHelper.isValidChildPluginRule(child)) {
+				return;
+			}
 
 			const childValidationRule = PluginConfigHelper.getValidationData(child, options);
 
-			if (!childValidationRule) return;
+			if (!childValidationRule) {
+				return;
+			}
 
 			const isNameMatched = childValidationRule.rule === validationRule.rule;
 
-			if (!isNameMatched) return;
+			if (!isNameMatched) {
+				return;
+			}
 
 			const messageArgs: PluginNoSelfNestingMessageArgs = [
 				childValidationRule.messageFormattedName,

@@ -10,16 +10,16 @@ export abstract class PluginMediaConfig {
 	 * @example for PluginMediaConfig.MEDIA_PREFIX_MIXIN output is:
 	 * { name: 'include', params: '^media-' }.
 	 */
-	public static readonly PREFIX_MIXIN = PluginConfigHelper.createAtRuleInclude(MediaConfig.PREFIX);
+	public static readonly PrefixMixin = PluginConfigHelper.createAtRuleInclude(MediaConfig.PREFIX);
 
 	/**
 	 * Regular expression mixin for matching media prefix in CSS rules.
 	 * @example for PluginMediaConfig.MEDIA_PREFIX_REGEXP_MIXIN output is:
 	 * { name: 'include', params: /^media-/ }.
 	 */
-	public static readonly PREFIX_REGEXP_MIXIN = PluginConfigHelper.createAtRuleInclude(new RegExp(MediaConfig.PREFIX));
+	public static readonly PrefixRegexMixin = PluginConfigHelper.createAtRuleInclude(new RegExp(MediaConfig.PREFIX));
 
-	public static readonly AT_RULES: readonly PluginConfigAtRule[] = PluginConfigHelper.atRuleParamsToRegExp([
+	public static readonly AtRules: readonly PluginConfigAtRule[] = PluginConfigHelper.atRuleParamsToRegExp([
 		/**
 		 * SCSS Media includes for specific devices:
 		 * @example @include media-desktop;
