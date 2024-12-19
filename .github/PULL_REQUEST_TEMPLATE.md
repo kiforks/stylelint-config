@@ -1,24 +1,24 @@
 ## Description
 
-Brief description of the changes introduced by this merge request, focusing on updates or improvements to the Stylelint configuration or related linting behavior (no more than 150 chars).
-
-## Related Tickets & Documents
-
-- Related Stylelint Issue or Proposal [link]
-- Closes tasks or bugs [link to Jira or GitHub issue]
+Briefly describe the changes introduced by this merge request (e.g., updated Stylelint rules, dependency upgrades, bug fixes). Limit to 150 chars.
 
 ## Checklist
 
-- [ ] All linting rules have been tested locally with `stylelint "<your-files-glob>"`.
-- [ ] Updated Stylelint configuration (`.stylelintrc` or equivalent) if changes were made.
-- [ ] Documentation updated (if necessary) to reflect new or modified linting rules.
-- [ ] Changes do not introduce any known conflicts with existing linting rules.
-- [ ] All tests pass locally, including Stylelint validation.
+- [ ] **Clear and concise description** of the changes.
+- [ ] **Changelog updated** (if the changes affect users).
+- [ ] **Code review completed** for readability and maintainability.
+- [ ] **Impact assessment** done to identify potential side effects.
+- [ ] **Documentation updated** if the changes alter usage or behavior.
 
-## Screenshots
+## Related Issues/Tickets (Optional)
 
-Attach relevant screenshots, code snippets, or terminal outputs demonstrating the changes (optional).
+- Related Issue/Proposal: [Link]
+- Closes: [Link to GitHub Issue or Jira Ticket]
 
-## Additional Notes
+## Screenshots/Outputs (Optional)
 
-Any additional information or context about the changes made in this merge request. E.g. reasoning behind adding a specific rule, plugin updates, or refactoring related to Stylelint (optional).
+Add relevant screenshots, code snippets, or terminal outputs to demonstrate changes (if applicable).
+
+## Additional Notes (Optional)
+
+Provide context, reasoning, or any additional details regarding the changes. For technical updates (e.g., package upgrades), specify the reason for the change.
