@@ -1,7 +1,7 @@
 {
 	"name": "@kiforks/stylelint-config",
 	"description": "Stylelint shareable config",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"scripts": {
 		"update": "ncu -u && npm install",
 		"build": "rollup -c && prettier --write .stylelintrc.js",
