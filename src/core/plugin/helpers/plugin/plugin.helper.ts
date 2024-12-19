@@ -13,8 +13,8 @@ import { ChildNode } from 'postcss/lib/node';
  */
 export abstract class PluginHelper {
 	public static isInvalidSyntaxBlock(rule: PluginRuleType): boolean {
-		const hasRuleBlock = PluginHelper.hasBlock(rule);
-		const isNotStandardSyntaxRule = PluginHelper.isRule(rule) && !PluginHelper.isStandardSyntaxRule(rule);
+		const hasRuleBlock = PluginHelper.hasBlock(rule),
+			isNotStandardSyntaxRule = PluginHelper.isRule(rule) && !PluginHelper.isStandardSyntaxRule(rule);
 
 		return !hasRuleBlock || isNotStandardSyntaxRule;
 	}
@@ -24,7 +24,9 @@ export abstract class PluginHelper {
 	}
 
 	public static isParentRoot(node: Nullable<Node>): boolean {
-		return !!node?.parent && PluginHelper.isRoot(node.parent);
+		// @ts-ignore this is the only way to fix it
+		// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+		return Boolean(node?.parent) && PluginHelper.isRoot(node.parent!);
 	}
 
 	public static isRule(node: Node): node is Rule {
@@ -59,7 +61,7 @@ export abstract class PluginHelper {
 		return statement.nodes !== undefined;
 	}
 
-	public static isStandardSyntaxRule(rule: Rule | any): boolean {
+	public static isStandardSyntaxRule(rule: Rule | never): boolean {
 		if (rule.type !== 'rule') {
 			return false;
 		}
@@ -166,7 +168,7 @@ export abstract class PluginHelper {
 	 * regex that matches the passed-in input.
 	 */
 	public static optionsMatches<Key extends string = string>(
-		options: { [x: string]: any },
+		options: Record<string, unknown>,
 		propertyName: Key,
 		input: unknown
 	): boolean {
@@ -177,7 +179,7 @@ export abstract class PluginHelper {
 		const propertyValue = options[propertyName];
 
 		if (propertyValue instanceof RegExp || Array.isArray(propertyValue)) {
-			return !!PluginHelper.matchesStringOrRegExp(input, propertyValue);
+			return Boolean(PluginHelper.matchesStringOrRegExp(input, propertyValue));
 		}
 
 		return false;
@@ -239,19 +241,24 @@ export abstract class PluginHelper {
 
 	// Internal helper method to check if an object is plain
 	private static _isPlainObject(o: unknown): boolean {
-		if (!PluginHelper.isObject(o)) return false;
+		if (!PluginHelper.isObject(o)) {
+			return false;
+		}
 
-		const obj = o as object;
+		const obj = o as object,
+			ctor = obj.constructor;
 
-		const ctor = obj.constructor;
-
-		if (ctor === undefined) return true;
+		if (ctor === undefined) {
+			return true;
+		}
 
 		const prot = ctor.prototype;
 
-		if (!PluginHelper.isObject(prot)) return false;
+		if (!PluginHelper.isObject(prot)) {
+			return false;
+		}
 
-		return Object.prototype.hasOwnProperty.call(prot, 'isPrototypeOf');
+		return Object.hasOwn(prot, 'isPrototypeOf');
 	}
 
 	private static testAgainstStringOrRegExpOrArray(
@@ -283,19 +290,19 @@ export abstract class PluginHelper {
 			return match ? { match: value, pattern: comparison, substring: match[0] || '' } : false;
 		}
 
-		const [firstComparisonChar] = comparison;
-		const lastComparisonChar = comparison[comparison.length - 1];
-		const secondToLastComparisonChar = comparison[comparison.length - 2];
-
-		const comparisonIsRegex =
-			firstComparisonChar === '/' &&
-			(lastComparisonChar === '/' || (secondToLastComparisonChar === '/' && lastComparisonChar === 'i'));
-		const hasCaseInsensitiveFlag = comparisonIsRegex && lastComparisonChar === 'i';
+		const index = 2,
+			[firstComparisonChar] = comparison,
+			lastComparisonChar = comparison[comparison.length - 1],
+			secondToLastComparisonChar = comparison[comparison.length - index],
+			comparisonIsRegex =
+				firstComparisonChar === '/' &&
+				(lastComparisonChar === '/' || (secondToLastComparisonChar === '/' && lastComparisonChar === 'i')),
+			hasCaseInsensitiveFlag = comparisonIsRegex && lastComparisonChar === 'i';
 
 		if (comparisonIsRegex) {
-			const regexPattern = hasCaseInsensitiveFlag ? comparison.slice(1, -2) : comparison.slice(1, -1);
-			const regexFlags = hasCaseInsensitiveFlag ? 'i' : '';
-			const valueMatch = value.match(new RegExp(regexPattern, regexFlags));
+			const regexPattern = hasCaseInsensitiveFlag ? comparison.slice(1, -index) : comparison.slice(1, -1),
+				regexFlags = hasCaseInsensitiveFlag ? 'i' : '',
+				valueMatch = value.match(new RegExp(regexPattern, regexFlags));
 
 			return valueMatch ? { match: value, pattern: comparison, substring: valueMatch[0] || '' } : false;
 		}

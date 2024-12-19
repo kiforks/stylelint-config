@@ -2,7 +2,7 @@ import config from '../../../.stylelintrc.js';
 
 import stylelint from 'stylelint';
 
-const lint = stylelint.lint;
+const { lint } = stylelint;
 
 /** @see src/index.ts */
 describe('config', () => {
@@ -25,7 +25,7 @@ describe('config', () => {
 				const customMediaPatternWarning = warnings.find(warning => warning.rule === 'at-rule-property-required-list');
 
 				expect(customMediaPatternWarning.text).toContain(
-					'Expected property "font-display" for at-rule "font-face" (at-rule-property-required-list'
+					'Expected descriptor "font-display" for at-rule "font-face" (at-rule-property-required-list)'
 				);
 			});
 		});

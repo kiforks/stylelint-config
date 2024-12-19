@@ -9,7 +9,7 @@ import { PluginConfigAtRule } from '../../interfaces';
 describe('PluginMediaConfig', () => {
 	describe('MEDIA_PREFIX_MIXIN', () => {
 		it('should define the correct MEDIA_PREFIX_MIXIN', () => {
-			expect(PluginMediaConfig.PREFIX_MIXIN).toEqual({
+			expect(PluginMediaConfig.PrefixMixin).toEqual({
 				name: 'include',
 				params: '^media-',
 			});
@@ -18,7 +18,7 @@ describe('PluginMediaConfig', () => {
 
 	describe('MEDIA_PREFIX_REGEXP_MIXIN', () => {
 		it('should define the correct MEDIA_PREFIX_REGEXP_MIXIN', () => {
-			expect(PluginMediaConfig.PREFIX_REGEXP_MIXIN).toEqual({
+			expect(PluginMediaConfig.PrefixRegexMixin).toEqual({
 				name: 'include',
 				params: /^media-/,
 			});
@@ -55,7 +55,7 @@ describe('PluginMediaConfig', () => {
 				...MediaRuleHelper.createBreakpointBetweenConfigRules(MediaConfig.BREAKPOINTS),
 			]);
 
-			expect(PluginMediaConfig.AT_RULES).toEqual(data);
+			expect(PluginMediaConfig.AtRules).toEqual(data);
 		});
 	});
 });

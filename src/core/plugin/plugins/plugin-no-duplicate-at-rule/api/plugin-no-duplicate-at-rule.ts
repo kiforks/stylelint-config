@@ -23,31 +23,44 @@ export class PluginNoDuplicateAtRule extends PluginBase {
 			possible: PluginConfigHelper.areAtRules,
 		};
 
-		if (!this.isValidOptions(mainOptions)) return;
+		if (!this.isValidOptions(mainOptions)) {
+			return;
+		}
 
 		this.checkAtRule(result, options);
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-invalid-void-type
 	protected check({ rule, options }: PluginCheckData<PluginConfigAtRule[], undefined, AtRule>): false | void {
-		if (PluginHelper.isInvalidSyntaxBlock(rule)) return;
+		if (PluginHelper.isInvalidSyntaxBlock(rule)) {
+			return;
+		}
 
-		const validationRule = PluginConfigHelper.getValidationAtRule(rule, options);
-		const { parent } = rule;
+		const validationRule = PluginConfigHelper.getValidationAtRule(rule, options),
+			{ parent } = rule;
 
-		if (!validationRule || !parent) return;
+		if (!validationRule || !parent) {
+			return;
+		}
 
 		parent.walk(child => {
 			const isInvalidChild = !PluginHelper.isChildPluginAtRule(child) || child === rule || child.parent !== parent;
 
-			if (isInvalidChild) return;
+			if (isInvalidChild) {
+				return;
+			}
 
 			const childValidationRule = PluginConfigHelper.getValidationAtRule(child, validationRule.rule);
 
-			if (!childValidationRule) return;
+			if (!childValidationRule) {
+				return;
+			}
 
 			const isNameMatched = childValidationRule.rule === validationRule.rule;
 
-			if (!isNameMatched || this.violatedNodes.includes(child)) return;
+			if (!isNameMatched || this.violatedNodes.includes(child)) {
+				return;
+			}
 
 			const messageArgs: PluginNoDuplicateAtRuleMessageArgs = [childValidationRule.messageName];
 

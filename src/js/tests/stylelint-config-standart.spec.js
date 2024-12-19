@@ -3,7 +3,7 @@ import { getWarning } from './spec-helpers.js';
 
 import stylelint from 'stylelint';
 
-const lint = stylelint.lint;
+const { lint } = stylelint;
 
 /** @see https://stylelint.io/user-guide/rules/  */
 describe('stylelint-config-standart', () => {

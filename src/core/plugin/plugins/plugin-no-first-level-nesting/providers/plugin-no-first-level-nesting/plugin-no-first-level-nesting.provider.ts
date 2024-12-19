@@ -14,6 +14,6 @@ export const pluginNoFirstLevelNestingProvider = (): PluginProvider => ({
 		 * SCSS Media at-rules for breakpoints:
 		 * @example @include media-min(md);
 		 */
-		PluginMediaConfig.PREFIX_REGEXP_MIXIN,
+		PluginMediaConfig.PrefixRegexMixin,
 	] as PluginConfigRuleType[],
 });

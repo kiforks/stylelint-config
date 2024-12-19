@@ -1,19 +1,19 @@
 import { OrderHelper } from '@modules/order/helpers';
 
 export const ORDER_CONTENT_PSEUDO_ELEMENT_INCLUDES = OrderHelper.createIncludes([
-	// before
+	// Before
 	'before-clean',
 	'before',
 	'before-hover',
 	'before-active',
 
-	// after
+	// After
 	'after-clean',
 	'after',
 	'after-hover',
 	'after-active',
 
-	// before-after
+	// Before-after
 	'before-after-clean',
 	'before-after',
 	'before-after-hover',

@@ -24,7 +24,9 @@ export class PluginNoFirstLevelNesting extends PluginBase {
 			possible: PluginConfigHelper.isValidRuleData,
 		};
 
-		if (!this.isValidOptions(mainOptions)) return;
+		if (!this.isValidOptions(mainOptions)) {
+			return;
+		}
 
 		this.checkRule(result, options);
 		this.checkAtRule(result, options);
@@ -33,9 +35,14 @@ export class PluginNoFirstLevelNesting extends PluginBase {
 	protected check({ rule, options }: PluginCheckData<PluginConfigRuleType[]>): void {
 		const validationRule = PluginConfigHelper.getValidationData(rule, options);
 
-		if (!validationRule || !PluginHelper.isPluginRuleType(rule) || !PluginHelper.isParentRoot(rule)) return;
+		if (!validationRule || !PluginHelper.isPluginRuleType(rule) || !PluginHelper.isParentRoot(rule)) {
+			return;
+		}
 
-		const messageArgs: PluginNoFirstLevelNestingMessageArgs = [PluginHelper.getName(rule)!, validationRule.messageName];
+		const messageArgs: PluginNoFirstLevelNestingMessageArgs = [
+			PluginHelper.getName(rule) as string,
+			validationRule.messageName,
+		];
 
 		this.reportProblem({ node: rule, messageArgs });
 	}
